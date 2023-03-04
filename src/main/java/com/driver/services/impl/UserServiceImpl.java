@@ -19,7 +19,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(String username, String password, String countryName){
-        return new User();
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        //user.setOriginalCountry(countryName);
+        return user;
     }
 
     @Override
