@@ -1,11 +1,9 @@
 package com.driver.services.impl;
 
 import com.driver.model.*;
-import com.driver.repository.ConnectionRepository;
 import com.driver.repository.ServiceProviderRepository;
 import com.driver.repository.UserRepository;
 import com.driver.services.ConnectionService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +15,7 @@ public class ConnectionServiceImpl implements ConnectionService {
     UserRepository userRepository2;
     @Autowired
     ServiceProviderRepository serviceProviderRepository2;
-    @Autowired
-    ConnectionRepository connectionRepository2;
+
 
     @Override
     public User connect(int userId, String countryName) throws Exception{
@@ -38,7 +35,6 @@ public class ConnectionServiceImpl implements ConnectionService {
             List<ServiceProvider> serviceProviderList = user.getServiceProviderList();
             int a = Integer.MAX_VALUE;
             ServiceProvider serviceProvider = null;
-            Country country =null;
 
             for(ServiceProvider serviceProvider1:serviceProviderList){
 
@@ -49,7 +45,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                     if(countryName.equals(country1.getCountryName().toString()) && a > serviceProvider1.getId() ){
                         a=serviceProvider1.getId();
                         serviceProvider=serviceProvider1;
-                        country=country1;
                     }
                 }
             }
@@ -58,7 +53,6 @@ public class ConnectionServiceImpl implements ConnectionService {
                 connection.setUser(user);
                 connection.setServiceProvider(serviceProvider);
 
-                String cc = country.getCode();
                 int givenId = serviceProvider.getId();
                 String mask = countryName+"."+givenId+"."+userId;
 
