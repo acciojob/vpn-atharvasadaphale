@@ -16,7 +16,6 @@ public class ConnectionServiceImpl implements ConnectionService {
     @Autowired
     ServiceProviderRepository serviceProviderRepository2;
 
-
     @Override
     public User connect(int userId, String countryName) throws Exception{
 
@@ -24,7 +23,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         if(user.getMaskedIp()!=null){
             throw new Exception("Already connected");
         }
-        else if(countryName.equals(user.getOriginalCountry().getCountryName().toString())){
+        else if(countryName.equalsIgnoreCase(user.getOriginalCountry().getCountryName().toString())){
             return user;
         }
         else {
@@ -35,6 +34,7 @@ public class ConnectionServiceImpl implements ConnectionService {
             List<ServiceProvider> serviceProviderList = user.getServiceProviderList();
             int a = Integer.MAX_VALUE;
             ServiceProvider serviceProvider = null;
+            Country country =null;
 
             for(ServiceProvider serviceProvider1:serviceProviderList){
 
@@ -42,9 +42,10 @@ public class ConnectionServiceImpl implements ConnectionService {
 
                 for (Country country1: countryList){
 
-                    if(countryName.equals(country1.getCountryName().toString()) && a > serviceProvider1.getId() ){
+                    if(countryName.equalsIgnoreCase(country1.getCountryName().toString()) && a > serviceProvider1.getId() ){
                         a=serviceProvider1.getId();
                         serviceProvider=serviceProvider1;
+                        country=country1;
                     }
                 }
             }
@@ -53,8 +54,9 @@ public class ConnectionServiceImpl implements ConnectionService {
                 connection.setUser(user);
                 connection.setServiceProvider(serviceProvider);
 
+                String cc = country.getCode();
                 int givenId = serviceProvider.getId();
-                String mask = countryName+"."+givenId+"."+userId;
+                String mask = cc+"."+givenId+"."+userId;
 
                 user.setMaskedIp(mask);
                 user.setConnected(true);
@@ -95,15 +97,15 @@ public class ConnectionServiceImpl implements ConnectionService {
             else {
                 String countryName = "";
 
-                if (cc.equals(CountryName.IND.toCode()))
+                if (cc.equalsIgnoreCase(CountryName.IND.toCode()))
                     countryName = CountryName.IND.toString();
-                if (cc.equals(CountryName.USA.toCode()))
+                if (cc.equalsIgnoreCase(CountryName.USA.toCode()))
                     countryName = CountryName.USA.toString();
-                if (cc.equals(CountryName.JPN.toCode()))
+                if (cc.equalsIgnoreCase(CountryName.JPN.toCode()))
                     countryName = CountryName.JPN.toString();
-                if (cc.equals(CountryName.CHI.toCode()))
+                if (cc.equalsIgnoreCase(CountryName.CHI.toCode()))
                     countryName = CountryName.CHI.toString();
-                if (cc.equals(CountryName.AUS.toCode()))
+                if (cc.equalsIgnoreCase(CountryName.AUS.toCode()))
                     countryName = CountryName.AUS.toString();
 
                 User user2 = connect(senderId,countryName);
